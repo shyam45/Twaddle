@@ -2,8 +2,8 @@ import { Button, TextField, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { signupContext } from './Signup'
 import React, { useContext, useEffect, useState } from 'react'
-import { usernameValidation } from '../utils/validation'
-import { client } from '../utils/axiosClient'
+import { usernameValidation } from '../../utils/validation'
+import { client } from '../../utils/axiosClient'
 import { toast } from "react-toastify";
 
 const Stepper4 = () => {
@@ -29,6 +29,7 @@ const Stepper4 = () => {
       setsignupData({...signupData,username:username})
       stepIncrement()
     } 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error,submit]);
     return (
         <Box 

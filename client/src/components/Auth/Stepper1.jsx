@@ -1,12 +1,12 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { signupContext } from "./Signup";
 import React, { useContext, useState } from "react";
-import { validationP1 } from "../utils/validation";
+import { validationP1 } from "../../utils/validation";
 import { useEffect } from "react";
-import { client } from "../utils/axiosClient";
+import { client } from "../../utils/axiosClient";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { loginToggle } from "../Pages/Auth/Auth";
+import { loginToggle } from "../../Pages/Auth/Auth";
 
 const Stepper1 = () => {
   const navigate = useNavigate();
@@ -61,6 +61,7 @@ const Stepper1 = () => {
       getOtp()
       stepIncrement();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, submit]);
 
   return (

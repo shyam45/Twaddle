@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import { signupContext } from "./Signup";
 import React, { useContext, useState } from "react";
 import OtpInput from "react-otp-input";
-import { client } from "../utils/axiosClient";
+import { client } from "../../utils/axiosClient";
 
 const Stepper2 = () => {
   const { stepIncrement, signupData } = useContext(signupContext);

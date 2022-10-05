@@ -2,8 +2,8 @@ import { Button, TextField, Typography , Modal} from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { client } from "../utils/axiosClient";
-import { loginValidation } from "../utils/validation";
+import { client } from "../../utils/axiosClient";
+import { loginValidation } from "../../utils/validation";
 import { toast } from "react-toastify";
 import Forgotpassword from "./Forgotpassword";
 
@@ -49,6 +49,7 @@ const Login = ({ action }) => {
           toast.error(error.response.data.msg);
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, submit]);
 
   return (

@@ -20,14 +20,53 @@ const userSchema = new mongoose.Schema({
     username:{
         type: String,
     },
-    profile:{
-        type: String,
-    },
     password:{
         type : String,
         required: 'Password is required',
         minlength:8
+    },
+    profile:{
+        type: String,
+    },
+    coverPicture:{
+        type: String,
+        default:''
+    },
+    about:{
+        type:String
+    },
+    followers:{
+        type:Array,
+        default:[]
+    },
+    following:{
+        type:Array,
+        default:[]
+    },
+    Posts:{
+        type:Array,
+        default:[]
+    },
+    isAdmin:{
+        type:Boolean,
+        default:false,
+    },
+    desc:{
+        type:String,
+        max:50
+    },
+    city:{
+        type:String,
+        max:25
+    },
+    bookmarks:{
+        type:Array,
+        default:[]
+    },
+    notifications : {
+        type:Array,
+        default:[]
     }
-})
+},{timestamps:true})
 
 export const userModel = mongoose.model('User',userSchema)

@@ -2,7 +2,7 @@ import { Button, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { signupContext } from "./Signup";
 import React, { useContext, useState } from "react";
-import { passwordValidation } from "../utils/validation";
+import { passwordValidation } from "../../utils/validation";
 import CheckIcon from "@mui/icons-material/Check";
 const Stepper5 = () => {
   const {signupData,setsignupData, stepIncrement} = useContext(signupContext);

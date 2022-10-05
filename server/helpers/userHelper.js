@@ -1,113 +1,139 @@
-import * as dotenv from 'dotenv' 
-dotenv.config()
+import {userModel } from '../models/userModel.js'
 import bcrypt from 'bcrypt'
-import Twilio  from "twilio"
-import {userModel} from '../models/userModel.js'
-import { response } from 'express'
-import jwt from 'jsonwebtoken'
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-let client = new Twilio(accountSid,authToken)
 
-export  const userHelper = {
-
-    getOTP : (data) => {
+export const userHelper = {
+    getUser : async (user_id) => {
         return new Promise((resolve,reject)=>{
-            try {
-                client.verify.services(process.env.TWILIO_SERVICE_ID)
-                .verifications
-                .create({to: `+91${data.phone}`, channel: 'sms'})
-                .then(verification => resolve(verification.status))
-            } catch (error) {
-                console.log(error)
-            }
+            userModel.find({'_id' : user_id}).then((response)=>{
+                resolve(response)
+            }).catch((err)=>{
+                reject(err)
+            })
         })
     },
 
-    verifyOTP : (data) =>{
-        return new Promise((resolve,reject)=>{
-            client.verify.v2.services(process.env.TWILIO_SERVICE_ID)
-            .verificationChecks
-            .create({to: `+91${data.phone}`, code: data.otp})
-            .then((verification_check) => {
-                if (verification_check.status === 'approved') {
-                    resolve('success')
-                } else {
+    editUser : (data,_id) => {
+        return new Promise(async(resolve,reject)=>{
+            if (data.user_id === _id) {
+                if (data.password) {
+                    try {
+                        data.password = await bcrypt.hash(data.password,10)
+                    } catch (error) {
+                        console.log('hashing problem')
+                        reject()
+                    }
+                }
+                try {
+                    userModel.findByIdAndUpdate(_id,{
+                        $set : data
+                    }).then(()=>{
+                        resolve('successfully updated')
+                    })
+                } catch (error) {
+                    console.log('not updated')
                     reject()
                 }
-            })
-        })
-    },
-
-    verifyUser: (data)=>{
-        return new Promise(async(resolve, reject) => {
-            let userExist = await userModel.findOne({
-                $or : [
-                    {email : data.email},
-                    {phone : data.phone}
-                ]
-            })
-            if(userExist){
-                reject({msg : "User already exist"})
-            }else{
-                resolve(response)
+            } else {
+                console.log('user_id is not valid')
+                reject()
             }
         })
     },
 
-    usernameValid: (data)=>{
-        return new Promise(async(resolve, reject) => {
-            let usernameExist = await userModel.findOne({username:data.username})
-            if(usernameExist){
-                reject({msg : "Username already taken"})
-            }else{
-                resolve()
-            }
+    deleteUser : (_id) => {
+        userModel.findByIdAndDelete(_id).then(()=>{
+            return 
+        }).catch((err)=>{
+            throw(err)
         })
     },
 
-    doSignup: (data) => {
-        return new Promise(async(resolve, reject) => {
-            let user =await new userModel(data)
-            user.password = await bcrypt.hash(user.password,10)
-            try {
-                await user.save()
-                resolve(user)
-            } catch (err) {
-                reject(err.message)
-            }
-        })
-    },
-    
-    doLogin:(data) => {
-        return new Promise((resolve, reject) => {
-            userModel.findOne({email:data.email}).then(async(user) => {
-                if (user) {
-                    let status = await bcrypt.compare(data.password,user.password)
-                    if (status){
-                        var accessToken = jwt.sign({ email: user.email, username : user.name },process.env.ACCESS_TOKEN_SECRET,{expiresIn:"10m"});
-                        var refreshToken = jwt.sign({ email: user.email, username : user.name },process.env.REFRESH_TOKEN_SECRET,{expiresIn:"1d"});
-                        resolve({accessToken,refreshToken})
+    followUser : async (user_id,id) => {
+        try {
+            await userModel.findByIdAndUpdate(user_id,{
+                $push : {
+                    following : id
+                },
+            }).then(async()=>{
+                await userModel.findByIdAndUpdate(id,{
+                    $push : {
+                        followers : user_id
                     }
-                    else {
-                        reject({loginError:"invalid credentials"})
+                })
+            }).then(async()=>{
+                await userModel.findByIdAndUpdate(id,{
+                    $push : {
+                        notifications : {
+                            id : user_id,
+                            action : 'following',
+                            time : Date.now()
+                        }
                     }
-                }else{
-                    reject({loginError:"invalid credentials"})
+                })
+            }).then(()=>{
+                return {msg : 'successfully connected'}
+            })
+        } catch (error) {
+            throw err
+        }
+    },
+
+    unfollowUser : async (user_id,id) => {
+        try {
+            await userModel.findByIdAndUpdate(user_id,{
+                $pull : {
+                    following : id
                 }
-            });
-        })
+            })
+            await userModel.findByIdAndUpdate(id,{
+                $pull : {
+                    followers : user_id
+                }
+            })
+            return {msg : 'successfully connected'}
+        } catch (error) {
+            throw error
+        }
     },
 
-    forgotPassword : (data) => {
-        return new Promise(async(resolve, reject) => {
-            let userExist = await userModel.findOne({email : data.email})
-            if(userExist){
-                resolve({msg : "User found"})
-            }else{
-                reject({msg : "User not found"})
+    bookmarks : async (user_id,id)=>{
+        const user = await userModel.findById(user_id)
+        if (!user.bookmarks.includes(id)) {
+            try {
+                await userModel.findByIdAndUpdate(user_id,{
+                    $push : {
+                        bookmarks : id
+                    }
+                }).then(()=>{
+                    return {msg : 'bookmarked'}
+                })
+            } catch (error) {
+                throw error
+            }
+        } else {
+            try {
+                await userModel.findByIdAndUpdate(user_id,{
+                    $pull : {
+                        bookmarks : id
+                    }
+                }).then(()=>{
+                    return {msg : ''}
+                })k
+            } catch (error) {
+                throw error
+            }
+        }
+    },
+
+    getNotifications : (id) =>{
+        return new Promise((resolve,reject)=>{
+            try {
+                userModel.find({_id:id},{_id:0,notifications:1}).then((response)=>{
+                    resolve(response[0].notifications)
+                })
+            } catch (error) {
+                reject(error)
             }
         })
-    
     }
 }

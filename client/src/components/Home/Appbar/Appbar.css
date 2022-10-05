@@ -1,0 +1,34 @@
+.appbar{
+    width: 100%;
+    height: 3.5rem;
+    background-color: #fff;
+    display: flex;
+}
+.menusection{
+    display: flex;
+    width: 50%;
+    height:auto;
+    align-items: center;
+    justify-content: space-around;
+}
+.logo{
+    height: 1.5rem;
+    margin-left: 1rem;
+}
+.profilsection{
+    display: flex;
+    width: 50%;
+    height:auto;
+    align-items: center;
+    justify-content: space-around;
+}
+.css-1d3z3hw-MuiOutlinedInput-notchedOutline{
+    border: unset !important;
+    
+}
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input,.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root{
+    height: 2.5rem !important;
+    background-color: #f4f4f4 !important;
+    border-radius: 10px;
+}
+

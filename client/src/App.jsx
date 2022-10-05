@@ -3,6 +3,9 @@ import "./App.css";
 import Auth from "./Pages/Auth/Auth"
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Home from "./Pages/Home/Home";
+import Profile from "./Pages/Profile/Profile";
+
 const App = () => {
   return (
     <>
@@ -20,8 +23,10 @@ const App = () => {
       />
       <Router>
         <Routes>
+          <Route exact path="/" element={<Home />}/>
           <Route path="/login" element={<Auth />} />
           <Route path="/signup" element={<Auth />} />
+          <Route path='/profile' element={<Profile />}/>
         </Routes>
       </Router>
     </>

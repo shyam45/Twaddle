@@ -1,20 +1,20 @@
 import express from 'express'
-import {userHelper} from '../helpers/userHelper.js'
+import {authHelper} from '../helpers/authHelper.js'
 
 const router = express.Router()
 
 router.post('/getotp',(req,res)=>{
-    userHelper.getOTP(req.body)
+    authHelper.getOTP(req.body)
 })
 
 router.post('/verifyotp',(req,res)=>{
-    userHelper.verifyOTP(req.body).then(()=>{
+    authHelper.verifyOTP(req.body).then(()=>{
         res.status(200).json({msg:"otp verified"})
     })
 })
 
 router.post('/user',(req,res)=>{
-    userHelper.verifyUser(req.body).then(()=>{
+    authHelper.verifyUser(req.body).then(()=>{
         res.status(200).json({msg:"user not exist"})
     }).catch((error)=>{
         res.status(422).json(error)
@@ -22,7 +22,7 @@ router.post('/user',(req,res)=>{
 })
 
 router.post('/usernamevalid',(req,res)=>{
-    userHelper.usernameValid(req.body).then(()=>{
+    authHelper.usernameValid(req.body).then(()=>{
         res.status(200).json({msg:"username not exist"})
     }).catch((error)=>{
         res.status(422).json(error)
@@ -30,13 +30,17 @@ router.post('/usernamevalid',(req,res)=>{
 })
 
 router.post('/signup',(req,res)=>{
-    userHelper.doSignup(req.body).then(()=>{
+    authHelper.doSignup(req.body).then(()=>{
         res.status(200).json({msg:"signedup successfully"})
     })
 })
 
+router.get('/signup',(req,res)=>{
+    res.send('this is a signup page')
+})
+
 router.post('/login',(req,res)=>{
-    userHelper.doLogin(req.body).then(({accessToken,refreshToken})=>{
+    authHelper.doLogin(req.body).then(({accessToken,refreshToken})=>{
         res.cookie("jwt",accessToken,refreshToken,{
             httponly: true,
             sameSite:"None",
@@ -50,7 +54,7 @@ router.post('/login',(req,res)=>{
 })
 
 router.post('/forgotpassword',(req,res)=>{
-    userHelper.forgotPassword(req.body).then(()=>{
+    authHelper.forgotPassword(req.body).then(()=>{
         res.status(200).json({msg:"User Found"})
     }).catch(()=>{
         res.status(409).json({msg:"Invalid credential"})

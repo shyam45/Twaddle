@@ -1,12 +1,12 @@
 import { Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useContext } from "react";
-import svg from "../assets/Followers-rafiki.png";
+import svg from "../../assets/Followers-rafiki.png";
 import { signupContext } from "./Signup";
-import { client } from "../utils/axiosClient";
+import { client } from "../../utils/axiosClient";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { loginToggle } from "../Pages/Auth/Auth";
+import { loginToggle } from "../../Pages/Auth/Auth";
 
 const Stepper6 = () => {
   const navigate = useNavigate()
