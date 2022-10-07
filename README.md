@@ -1,4 +1,4 @@
-# 🔥🔥 Inbound Social Media App.
+# 🔥🔥 Twaddle Social Media App.
 Twaddle is a fully functional social media app with multiple features built with MERN Stack.
 
 Star⭐ the repo if you like what you see😉.
