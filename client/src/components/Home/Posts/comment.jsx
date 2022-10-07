@@ -1,38 +1,35 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
+import { useState } from 'react'
 import { CommentSection } from 'react-comments-section'
 import 'react-comments-section/dist/index.css'
+import { userContext } from '../../../Pages/Home/Home'
+import { client } from '../../../utils/axiosClient'
 import './Posts.css'
 
 const Comment = () => {
-  const data =[
-    {
-      userId: '02b',
-      comId: '017',
-      fullName: 'Lily',
-      userProfile: 'https://www.linkedin.com/in/riya-negi-8879631a9/',
-      text: 'I think you have a point🤔',
-      avatarUrl: 'https://ui-avatars.com/api/name=Lily&background=random',
-      replies: []
-    }
-  ]
+  const { fullName ,profile, _id} = useContext(userContext)
+  const [data,setData] = useState([])
+  useEffect(()=>{
+    client.get('/post/comment/633d6b09b8c1cddb50f87386',data).then((response)=>{
+      setData(response.data)
+    },[])
+  })
+  const submitAction = (data) =>{
+    client.put('/post/comment/633d6b09b8c1cddb50f87386',data).then(()=>{
+    })
+  }
+  const replyAction = (data) =>{
+    client.put('/post/replycomment/633d6b09b8c1cddb50f87386',data)
+  }
   return <CommentSection
         currentUser={{
-          currentUserId: '01a',
-          currentUserImg:
-            'https://ui-avatars.com/api/name=Riya&background=random',
-          currentUserProfile:
-            'https://www.linkedin.com/in/riya-negi-8879631a9/',
-          currentUserFullName: 'Riya Negi'
-        }}
-        logIn={{
-          loginLink: 'http://localhost:3001/',
-          signupLink: 'http://localhost:3001/'
+          currentUserId: _id,
+          currentUserImg: profile,
+          currentUserFullName: fullName
         }}
         commentData={data}
-        onSubmitAction={(data) => console.log('check submit, ', data)}
-        currentData={(data) => {
-          console.log('curent data', data)
-        }}
+        onReplyAction={(data)=>{replyAction(data)}}
+        onSubmitAction={(data)=>{submitAction(data)}}
       />
 }
 

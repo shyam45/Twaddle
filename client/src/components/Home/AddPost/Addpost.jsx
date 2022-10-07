@@ -9,6 +9,7 @@ import { client } from "../../../utils/axiosClient";
 
 function Addpost (props) {
   const [image,setImage] = useState('')
+
   const [description,setDescription] = useState('')
   const inputRef = useRef(null);
   const handleClick = () => {
@@ -23,7 +24,7 @@ function Addpost (props) {
     formData.append("file",image)
     formData.append("upload_preset","u7lj9tra")
     axios.post("https://api.cloudinary.com/v1_1/djkop1xi1/image/upload",formData).then((response)=>{
-      client.post('/post',{authorId:'1234',image:response.data.url,description:description})
+      client.post('/post',{authorId:'633940dba75a6ecb02c520c4',image:response.data.url,description:description})
     }).then(()=>{
       props.setModal(false)
     })

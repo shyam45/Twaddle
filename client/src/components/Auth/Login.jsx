@@ -1,26 +1,29 @@
-import { Button, TextField, Typography , Modal} from "@mui/material";
+import { Button, TextField, Typography, Modal } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { client } from "../../utils/axiosClient";
 import { loginValidation } from "../../utils/validation";
 import { toast } from "react-toastify";
 import Forgotpassword from "./Forgotpassword";
 
 const Login = ({ action }) => {
+  let navigate = useNavigate();
   const [error, setError] = useState({});
   const [submit, setSubmit] = useState(false);
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const [data, setData] = useState({
     email: "",
     password: "",
   });
 
-  const handleClick = () =>{
-    client.post("/forgotpassword",{email:data.email})
-    .then(()=>setOpen(true))
-    .catch((error)=>toast.error(error.response.data.msg))
-  }
+  const handleClick = () => {
+    client
+      .post("/forgotpassword", { email: data.email })
+      .then(() => setOpen(true))
+      .catch((error) => toast.error(error.response.data.msg));
+  };
 
   const handleChange = (e) => {
     setData({
@@ -37,9 +40,11 @@ const Login = ({ action }) => {
   useEffect(() => {
     if (Object.keys(error).length === 0 && submit) {
       client
-        .post("http://localhost:5000/login", { ...data })
+        .post("/auth/login", { ...data })
         .then((response) => {
-          toast.success(response.data.msg);
+          toast.success("Logined succesfuly");
+          localStorage.setItem("accesstoken", response.data.accessToken);
+          navigate("/"); 
         })
         .catch((error) => {
           setData({
@@ -49,7 +54,7 @@ const Login = ({ action }) => {
           toast.error(error.response.data.msg);
         });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, submit]);
 
   return (
@@ -100,7 +105,7 @@ const Login = ({ action }) => {
         </Link>
         <Modal
           open={open}
-          onClose={()=>setOpen(false)}
+          onClose={() => setOpen(false)}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
@@ -117,9 +122,10 @@ const Login = ({ action }) => {
         <Typography variant="body2" fontSize="0.7rem">
           You don't have an account ?{" "}
           <Link
-            to={"/signup"}
+            //to={"/signup"}
             style={{ textDecoration: "none", color: "#1976d2" }}
             onClick={() => {
+              navigate("/signup");
               action(true);
             }}
           >

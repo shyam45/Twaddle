@@ -41,13 +41,13 @@ router.get('/signup',(req,res)=>{
 
 router.post('/login',(req,res)=>{
     authHelper.doLogin(req.body).then(({accessToken,refreshToken})=>{
-        res.cookie("jwt",accessToken,refreshToken,{
+        res.cookie("jwt",refreshToken,{
             httponly: true,
             sameSite:"None",
             secure:true,
             maxAge: 24 * 60 * 60 * 1000
         })
-        res.status(200).json({msg:"logined successfully"})
+        res.status(200).json({accessToken})
     }).catch(()=>{
         res.status(409).json({msg:"Invalid credentials"})
     })

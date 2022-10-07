@@ -1,8 +1,9 @@
 import express from 'express'
 const router = express.Router()
 import { userHelper } from '../helpers/userHelper.js'
+import { authenticateToken } from '../middleware/authenticateToken.js'
 // get a user 
-    router.get('/:id',(req,res)=>{
+    router.get('/:id',authenticateToken,(req,res)=>{
         userHelper.getUser(req.params.id).then((response)=>{
             res.status(200).json(response)
         }).catch((err)=>{
@@ -54,6 +55,15 @@ import { userHelper } from '../helpers/userHelper.js'
         userHelper.getNotifications(req.params.id).then((response)=>{
             console.log(response)
             res.status(200).json(response)
+        }).catch((error)=>{
+            res.status(500).json(error)
+        })
+    })
+// search users
+    router.post('/search',(req,res)=>{
+        console.log('hghfjk')
+        userHelper.searchUser(req.body).then((filteredUsers)=>{
+            res.status(200).json(filteredUsers)
         }).catch((error)=>{
             res.status(500).json(error)
         })

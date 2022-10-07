@@ -61,10 +61,12 @@ export const userHelper = {
                     }
                 })
             }).then(async()=>{
-                await userModel.findByIdAndUpdate(id,{
+                const username = await userModel.find({_id:user_id},{_id:0,"username":1})
+                userModel.findByIdAndUpdate(id,{
                     $push : {
                         notifications : {
                             id : user_id,
+                            Followed_by : username[0].username,
                             action : 'following',
                             time : Date.now()
                         }
@@ -118,7 +120,7 @@ export const userHelper = {
                     }
                 }).then(()=>{
                     return {msg : ''}
-                })k
+                })
             } catch (error) {
                 throw error
             }
@@ -135,5 +137,18 @@ export const userHelper = {
                 reject(error)
             }
         })
+    },
+
+    searchUser : async(data)=>{
+        console.log(data)
+        const key = data.fullName
+        try {
+            const user = await userModel.find({},{fullName:1})
+            const filteredUsers = user.filter((e)=>e.fullName.includes(key))
+            console.log(filteredUsers,'searchuser');
+            return filteredUsers
+        } catch (error) {
+            throw error
+        }
     }
 }

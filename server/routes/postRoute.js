@@ -1,6 +1,8 @@
 import express from 'express'
 import { postHelper } from '../helpers/postHelper.js'
+import { authenticateToken } from '../middleware/authenticateToken.js'
 const router = express.Router()
+
 // create a post
 
 router.post('/',async (req,res) => {
@@ -56,3 +58,32 @@ router.put('/like/:id',(req,res)=>{
     })
 })
 
+// add comment
+
+router.put('/comment/:id',(req,res)=>{
+    postHelper.addComment(req.body,req.params.id).then(()=>{
+        res.status(200)
+    }).catch((error)=>{
+        res.status(500).json(error)
+    })
+})
+
+// reply comment
+
+router.put('/replycomment/:id',(req,res)=>{
+    postHelper.replyComment(req.body,req.params.id).then(()=>{
+        res.status(200)
+    }).catch((error)=>{
+        res.status(500).json(error)
+    })
+})
+
+//
+
+router.get('/comment/:id',(req,res)=>{
+    postHelper.getComment(req.params.id).then((response)=>{
+        res.status(200).json(response)
+    }).catch((error)=>{
+        res.status(500).json(error)
+    })
+})

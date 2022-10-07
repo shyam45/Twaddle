@@ -5,27 +5,38 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import IconButton from "@mui/material/IconButton";
 import { Divider, ListSubheader, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import { useState } from "react";
+import { useEffect } from "react";
 
-export default function ListGroup() {
+export default function ListGroup({ notifications }) {
+  const [notification, setNotifications] = useState([]);
+
+  useEffect(() => {
+    notifications.forEach((value) =>
+      setNotifications((oldArray) => [...oldArray , value])
+    );
+  }, []);
+
   return (
-    <List sx={{
-            width: "100%", 
-            maxWidth: 500, 
-            bgcolor: "background.paper" 
-        }}
-        subheader={
-            <ListSubheader component="div" id="nested-list-subheader">
-              Friend Requests
-            </ListSubheader>
-          }
-        >
-            <Divider />
-      {["sanu_sanu", "sanal_dominic"].map((value) => (
+    <List
+      sx={{
+        width: "100%",
+        maxWidth: 500,
+        bgcolor: "background.paper",
+      }}
+      subheader={
+        <ListSubheader component="div" id="nested-list-subheader">
+          Notifications
+        </ListSubheader>
+      }
+    >
+      <Divider />
+      {notification.map((value) => (
         <ListItem
-          key={value}
+          key={value.user_id}
           secondaryAction={
             <IconButton aria-label="comment">
-              <PersonAddAltIcon />
+              {value.followedBy && <PersonAddAltIcon />}
             </IconButton>
           }
         >
@@ -39,8 +50,8 @@ export default function ListGroup() {
             }}
           />
           <Box>
-            <Typography sx={{fontSize:'13px'}}>{value}</Typography>
-            <Typography sx={{fontSize:'10px'}}>{value} started following you . </Typography>
+            <Typography sx={{fontSize:'13px'}}>{value.likedBy || value.followedBy}</Typography>
+            <Typography sx={{fontSize:'10px'}}>{value.likedBy ? `${value.likedBy} liked your post.` : `${value.followedBy} started followed you.`}</Typography>
           </Box>
         </ListItem>
       ))}

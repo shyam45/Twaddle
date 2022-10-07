@@ -1,6 +1,7 @@
 import { Post } from '../models/postModel.js'
 import { userModel } from '../models/userModel.js'
-
+import mongoose from 'mongoose'
+const objectId = mongoose.Types.ObjectId
 export const postHelper = {
     createPost : (data) => {
         data.createdAt = Date.now()
@@ -104,4 +105,36 @@ export const postHelper = {
             }
         }
     },
+    addComment : async(data,id) =>{
+        Post.findByIdAndUpdate(id,{
+            $push : {
+                comments : data
+            }
+        }).then(()=>{
+            return {msg : 'added'}
+        }).catch((error)=>{
+            throw error
+        })
+    },
+    replyComment : async(data,id) =>{
+        console.log(data)
+
+        Post.updateOne({_id:id,"comments.comId":data.repliedToCommentId},{
+            $push : {
+                "comments.$.replies" : data
+            }
+        }).then(()=>{
+            return {msg : 'added'}
+        }).catch((error)=>{
+            throw error
+        })
+    },
+    getComment : async(id) =>{
+        try {
+            const comments = await Post.find({_id : id},{_id:0,comments:1})
+            return comments[0].comments
+        } catch (error) {
+            throw error
+        }
+    }
 }

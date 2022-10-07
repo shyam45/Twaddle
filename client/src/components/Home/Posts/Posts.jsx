@@ -65,7 +65,7 @@ export default function Posts({ ...post }) {
   const handlebookmarks = () => {
     client
       .put(`/user/bookmark/${post._id}`, {
-        user_id: "633940dba75a6ecb02c520c4",
+        user_id: "",
       })
       .then(() => {
         setBookmarked(!bookmarked);
@@ -74,7 +74,7 @@ export default function Posts({ ...post }) {
 
   const handleLike = () => {
     client
-      .put(`/post/like/${post._id}`, { user_id: "633943c3a75a6ecb02c520c6" })
+      .put(`/post/like/${post._id}`, { user_id: "633940dba75a6ecb02c520c4" })
       .then(() => {
         setlike(isLiked ? like - 1 : like + 1);
         setIsLiked(!isLiked);

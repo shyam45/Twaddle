@@ -1,5 +1,4 @@
-import React from "react";
-import FavoriteBorderSharpIcon from "@mui/icons-material/FavoriteBorderSharp";
+import React, { useState } from "react";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import AppsIcon from "@mui/icons-material/Apps";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
@@ -8,12 +7,18 @@ import ListGroup from "../../ListGroup";
 import { Box } from "@mui/system";
 import { Modal, Popover } from "@mui/material";
 import Addpost from "../AddPost/Addpost";
+import { client } from "../../../utils/axiosClient";
 
 const Icons = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [modal, setModal] = React.useState(false);
-  const handleClick = (event) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [modal, setModal] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const handleClick = async (event) => {
     setAnchorEl(event.currentTarget);
+    const response = await client.get(
+      "user/notifications/633940dba75a6ecb02c520c4"
+    );
+    setNotifications(response.data);
   };
 
   const handleClose = () => {
@@ -53,7 +58,7 @@ const Icons = () => {
             boxShadow: 24,
           }}
         >
-          <Addpost setModal = {setModal} />
+          <Addpost setModal={setModal} />
         </Box>
       </Modal>
       <NotificationsNoneOutlinedIcon
@@ -72,7 +77,7 @@ const Icons = () => {
           horizontal: "center",
         }}
       >
-        <ListGroup />
+        <ListGroup notifications={notifications} />
       </Popover>
     </>
   );
